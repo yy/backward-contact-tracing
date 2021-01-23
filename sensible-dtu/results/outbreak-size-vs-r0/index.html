@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <script src="https://unpkg.com/d3-interpolate-path@2.1.2/build/d3-interpolate-path.js"></script>
+    <script src="https://synesenom.github.io/dalian/dl/dalian.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../style/base.css">
+    <title>plots</title>
+</head>
+<body>
+<main>
+    <div id="desc">
+        <strong>Outbreak size at different R0 values</strong><br>
+        The boxes show the outbreak size statistics for simulations with fixed expected infectious period (14 days),
+        expected incubation period (3 days) and varying R0. Each box is a summary of 1000 realizations at random start
+        times.
+        <br><br>
+        <a onclick="chart.download('outbreak-size-vs-r0')">Download</a>
+        <br><br>
+        <a href="../">Back to contents</a>
+    </div>
+    <div id="plot"></div>
+</main>
+</body>
+<script>
+    // R0   T   beta
+    // 1    14  0.0714
+    // 1.5  14  0.1071
+    // 2    14  0.1428
+    // 2.5  14  0.1785
+    // 3    14  0.2142
+    // 3.5  14  0.25
+    // 4    14  0.2857
+
+    // Degree distribution.
+    let chart;
+    (async () => {
+        chart = dalian.BoxPlot('degree-dist-default', '#plot')
+            .data([
+                {name: '1.0', value: await d3.json('data/r0-1.0.json')},
+                {name: '1.5', value: await d3.json('data/r0-1.5.json')},
+                {name: '2.0', value: await d3.json('data/r0-2.0.json')},
+                {name: '2.5', value: await d3.json('data/r0-2.5.json')},
+                {name: '3.0', value: await d3.json('data/r0-3.0.json')},
+                {name: '3.5', value: await d3.json('data/r0-3.5.json')},
+                {name: '4.0', value: await d3.json('data/r0-4.0.json')}
+            ])
+            .width(700)
+            .height(400)
+            .margins(50)
+            .color.palette('palette-light')
+            .font.size(14)
+            .bottomAxis.label('basic reproduction number')
+            .leftAxis.label('outbreak size')
+            .tooltip.on(true)
+            .tooltip.titleFormat(title => `R = ${title}`)
+            .render();
+    })();
+</script>
+</html>

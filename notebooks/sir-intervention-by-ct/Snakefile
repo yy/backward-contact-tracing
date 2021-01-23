@@ -1,0 +1,51 @@
+from os.path import join as j
+import numpy as np
+import pandas as pd
+import itertools
+
+#configfile: "workflow/config.yaml"
+
+
+IV_DIR = "data/res-sir-interv"
+IV_BASE_NET = j(IV_DIR, "base-network.edgelist") # base network
+IV_RHO = 0.0001 # frac of initial infected individuas
+IV_TAU = 0.1 # Transmission rate
+IV_GAMMA = 1 # Recovery rate
+IV_T_IV =  3 # time at which intervention is made
+IV_DT = 0.5 # time lag after which we measure the efficacy of the intervention
+IV_P_T = 0.5 # Probabbility of adding non-parent neighbors to the contact list
+IV_NUM_SIM = 50 # Number of simulations
+
+# Sampling probability for the infected individuals
+IV_P_S_LIST = ["%.3f" % x for x in np.linspace(0.1, 1.0, 10)]
+#IV_P_S_LIST = ["%.3f" % x for x in np.concatenate([np.linspace(0.005, 0.1, 20), np.linspace(0.15, 1.0, 18)])]
+
+# Probability that the contact tracing is conducted
+IV_P_R_LIST = ["%.3f" % x for x in np.linspace(0.1, 1.0, 10)]
+#IV_P_R_LIST = ["%.3f" % x for x in np.concatenate([np.linspace(0.005, 0.1, 20), np.linspace(0.15, 1.0, 18)])]
+
+
+rule all:
+    input:
+        IV_BASE_NET,
+        expand(j(IV_DIR, "res-sir-interv-ps={p_s}-pr={p_r}.json"), p_s=IV_P_S_LIST, p_r=IV_P_R_LIST)
+        
+rule sir_interv:
+    input: IV_BASE_NET 
+    output: j(IV_DIR, "res-sir-interv-ps={p_s}-pr={p_r}.json")
+    run:
+        shell("python3 sir_with_ct.py {IV_BASE_NET} {IV_RHO} "
+              "{IV_TAU} {IV_GAMMA} {IV_T_IV} {IV_DT} {wildcards.p_s} "
+              "{IV_P_T} {wildcards.p_r} {IV_NUM_SIM} {output}")
+
+rule generate_base_network_sir_interv:
+    output: IV_BASE_NET
+    run: shell("python3 generate_base_network_sir_simulation.py {output}")
+
+# rule some_data_processing:
+    # input:
+        # "data/some_data.csv"
+    # output:
+        # "data/derived/some_derived_data.csv"
+    # script:
+        # "workflow/scripts/process_some_data.py"

@@ -1,0 +1,40 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+main {
+    position: absolute;
+    width: 1000px;
+    left: 50%;
+    top: 100px;
+    margin-left: -400px;
+}
+
+#desc {
+    position: relative;
+    width: 300px;
+    float: right;
+}
+
+a,
+a:visited {
+    text-decoration: none;
+    color: royalblue;
+    bottom: 0;
+    cursor: pointer;
+}
+a:hover {
+    border-bottom: 2px solid royalblue;
+}
+
+ul li {
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+#plot {
+    position: relative;
+    width: 700px;
+    float: left;
+}

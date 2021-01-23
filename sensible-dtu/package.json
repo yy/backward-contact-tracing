@@ -1,0 +1,15 @@
+{
+  "name": "seir",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "chalk": "^4.0.0",
+    "csv-parser": "^2.3.2",
+    "csv-writer": "^1.6.0",
+    "d3-array": "^2.4.0",
+    "d3-collection": "^1.0.7",
+    "ranjs": "^1.23.0",
+    "uuid": "^8.0.0"
+  }
+}

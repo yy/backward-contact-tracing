@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <script src="https://unpkg.com/d3-interpolate-path@2.1.2/build/d3-interpolate-path.js"></script>
+    <script src="https://synesenom.github.io/dalian/dl/dalian.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../style/base.css">
+    <title>plots</title>
+</head>
+<body>
+<main>
+    <div id="desc">
+        <strong>Degree distribution of parents.</strong><br>
+        Curves show the degree distribution as measured among the parent nodes (nodes that infect others) with expected
+        infectious period of 14 days, and basic reproduction number R = 2. All measurements took place in the first
+        1 month of the epidemic (typical length of the outbreak is 3-6 months).
+        Each distribution is a result of 1000 simulations.
+        Dashed lines correspond to the degree distribution on the network (without the epidemic), the excess degree distribution (G<sub>1</sub>) and second neighbor's degree distribution (G<sub>2</sub>).
+        Degrees are 1h constrained meaning that contacts that have a total duration of at least 1 hour in the dataset are counted.
+        <br><br>
+        <a onclick="chart.download('degree-dist-parents')">Download</a>
+        <br><br>
+        <a href="../">Back to contents</a>
+    </div>
+    <div id="plot"></div>
+</main>
+<svg width="300" height="300" viewBox="0 0 300 300"
+     xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <pattern id="pattern-striped" width="2" height="2" stroke="white" stroke-linecap="square" stroke-width="1" patternTransform="rotate(45) scale(2)"
+                 patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="4" stroke-width="2"></line>
+        </pattern>
+        <mask id="striped" x="0" y="0" width="1" height="1" >
+            <rect x="0" y="0" width="1000" height="1000" fill="url(#pattern-striped)" />
+        </mask>
+    </defs>
+</svg>
+</body>
+<script>
+    // Degree distribution.
+    let chart;
+    (async () => {
+        const colors = [
+            '#77aadd',
+            '#99ddff',
+            '#44bb99',
+            '#bbcc33',
+            '#aaaa00',
+            '#eedd88',
+            '#ee8866',
+            '#ffaabb',
+            '#dddddd'
+        ]
+        chart = dalian.LineChart('degree-dist-parents', '#plot')
+            .data([
+                {name: 'baseline', values: await d3.csv('data/baseline.csv')},
+                {name: 'baseline (G1)', values: await d3.csv('data/baseline-g1.csv')},
+                {name: 'baseline (G2)', values: await d3.csv('data/baseline-g2.csv')},
+                {name: 'infected', values: await d3.csv('data/infected_tmax-1m.csv')},
+                {name: 'parent', values: await d3.csv('data/parent_tmax-1m.csv')},
+            ])
+            .width(700)
+            .height(400)
+            .margins(50)
+            .color.palette('palette-light')
+            .lineStyle({
+                'baseline': 'dashed',
+                'baseline (G1)': 'dashed',
+                'baseline (G2)': 'dashed'
+            })
+            .font.size(14)
+            .bottomAxis.label('constrained degree')
+            .leftAxis.label('ccdf')
+            .yRange.min(0)
+            .tooltip.on(true)
+            .tooltip.yFormat((y, name) => name)
+            .render();
+        const legend = d3.select('body').append('svg')
+            .append('g');
+        ['baseline', 'baseline (G1)', 'baseline (G2)', 'infected', 'parent'].map((d, i) => {
+            const entry = legend.append('g')
+            entry.append('rect')
+                .attr('x', 0)
+                .attr('y', 20 * i)
+                .attr('width', 16)
+                .attr('height', 16)
+                .attr('rx', 3)
+                .attr('ry', 3)
+                .attr('fill', colors[i])
+                .attr('mask', i <= 2 ? 'url(#striped)' : null)
+            entry.append('text')
+                .attr('x', 20)
+                .attr('y', 13 + 20 * i)
+                .attr('text-anchor', 'start')
+                .text(d)
+        })
+        chart.objects.add('legend', legend.node(), {
+            x: 180,
+            y: 1
+        })
+    })();
+</script>
+</html>
