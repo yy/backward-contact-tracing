@@ -20,7 +20,7 @@ PAPER, SUPP = [j(PAPER_DIR, f) for f in ("main.pdf", "supp.pdf")]
 #
 FIGS = [
     j(FIG_DIR, f)
-    for f in ("fig1.pdf", "fig2.pdf", "fig2-b.pdf", "fig3.pdf", "fig5.pdf")
+    for f in ("schematic-ctrace.pdf", "deg-ccdf-new.pdf", "sim_results.pdf", "sim_dtu_results.pdf")
 ]
 
 #
@@ -829,3 +829,40 @@ rule prep_plot_data_ps_vs_infected_ba_seir:
         filelist=temp(make_file_list(BA_CONT_SEIR_PLOT_PS_INFECTED_FILE_LIST)),
     shell:
         "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
+
+
+rule plot_fig_degree_dist:
+    input:
+        ba_deg_dist_file = BA_CONT_SEIR_DEG_DIST,
+        intb_deg_dist_file=INTB_CONT_SEIR_DEG_DIST,
+        dtu_deg_dist_file=DTU_CONT_DEG_DIST.format(resol=12)
+    output:
+        fig=j(FIG_DIR, "deg-ccdf-new.pdf"),
+        data=j(FIG_DIR, "deg-ccdf-new.csv")
+    shell:
+        "papermill workflow/plot_fig_degree_dist.ipynb -r ba_deg_dist_file {input.ba_deg_dist_file} -r intb_deg_dist_file {input.intb_deg_dist_file} -r dtu_deg_dist_file {input.dtu_deg_dist_file} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
+
+
+rule plot_fig_sim_result:
+    input:
+        int_time = BA_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
+        int_ps = BA_CONT_SEIR_PLOT_PS_INFECTED_DATA,
+        intb_time = INTB_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
+        intb_ps = INTB_CONT_SEIR_PLOT_PS_INFECTED_DATA,
+    output:
+        fig=j(FIG_DIR, "sim_results.pdf"),
+        data=j(FIG_DIR, "sim_results.csv")
+    shell:
+        "papermill workflow/plot-sim-result.ipynb -r int_time {input.int_time} -r int_ps {input.int_ps} -r intb_time {input.intb_time} -r intb_ps {input.intb_ps} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
+
+
+rule plot_fig_sim_dtu_result:
+    input:
+        dtu_time = DTU_CONT_PLOT_TIME_INFECTED_DATA,
+        dtu_ps = DTU_CONT_PLOT_PS_INFECTED_DATA
+    output:
+        fig=j(FIG_DIR, "sim_dtu_results.pdf"),
+        data=j(FIG_DIR, "sim_dtu_results.csv")
+    shell:
+        "papermill workflow/plot-sim-dtu-result.ipynb -r dtu_time {input.dtu_time} -r dtu_ps {input.dtu_ps} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
+
