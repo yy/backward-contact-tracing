@@ -54,5 +54,5 @@ if __name__ == "__main__":
     else:
         G = nx.read_edgelist(output_net_file, nodetype=int)
     sim_data = seir.run_SEIR(G, **params)
-    seir.to_log(sim_data, output_log_file)
+    seir.to_log(G, sim_data, output_log_file)
     nx.write_edgelist(G, output_net_file)
