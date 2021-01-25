@@ -4,7 +4,7 @@ from collections import Counter
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pandas as pd
 import seaborn as sns
 
 matplotlib.rcParams["text.usetex"] = True
@@ -102,11 +102,8 @@ def lineplot(
     inset_bbox=None,
     inset_xticks=None,
     inset_yticks=None,
-    inset_zoom_params={},
 ):
-    """
-    line plot with inset
-    """
+    """line plot with inset."""
     for i in range(len(data_params)):
         sns.lineplot(data=df_list[i], **data_params[i], **plot_kwargs, ax=ax)
 
