@@ -4,7 +4,7 @@ from collections import Counter
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pandas as pd
 import seaborn as sns
 
 matplotlib.rcParams["text.usetex"] = True
@@ -102,11 +102,8 @@ def lineplot(
     inset_bbox=None,
     inset_xticks=None,
     inset_yticks=None,
-    inset_zoom_params={},
 ):
-    """
-    line plot with inset
-    """
+    """line plot with inset."""
     for i in range(len(data_params)):
         sns.lineplot(data=df_list[i], **data_params[i], **plot_kwargs, ax=ax)
 
@@ -147,3 +144,39 @@ def lineplot(
         axins = None
 
     return ax, axins
+
+
+def get_xydata_from_ax(axes):
+    captions = "abcdefghijklmnopqrstuvwxyz"
+    dflist = []
+    for i, ax in enumerate(axes):
+        key = captions[i]
+        df = _get_xydata_from_ax(ax)
+        df["plot"] = key
+        dflist += [df]
+    return pd.concat(dflist, ignore_index=True)
+
+
+def _get_xydata_from_ax(ax):
+    lines = [i for i in ax.lines if i.get_label() != "_nolegend_"]
+    lclist = [
+        i
+        for i in ax.get_children()
+        if isinstance(i, matplotlib.collections.LineCollection)
+    ]
+    dflist = []
+    for i, lc in enumerate(lclist):
+        line = lines[i]
+        lc = lclist[i]
+        yerr = np.vstack([yerr[:, 1] for yerr in lc.get_segments()])
+        x = line.get_xdata()
+        y = line.get_ydata()
+        label = line.get_label()
+        if yerr.shape[0] != x.size:
+            yerr = np.vstack([y, y]).T
+        df = pd.DataFrame(
+            {"x": x, "y": y, "ylow": yerr[:, 0], "yhigh": yerr[:, 1], "label": label}
+        )
+        dflist += [df]
+    df = pd.concat(dflist, ignore_index=True)
+    return df

@@ -43,7 +43,7 @@ def run_SEIR(
     return sim_data
 
 
-def to_log(sim_data, filename=None):
+def to_log(G, sim_data, filename=None):
     df = pd.DataFrame(sim_data.transmissions(), columns=["elapsed", "source", "node"])
     df["type"] = "e"
 

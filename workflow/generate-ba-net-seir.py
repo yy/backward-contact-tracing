@@ -23,5 +23,5 @@ if __name__ == "__main__":
         "init_seed_frac": 0.001,  # initial seed fraction
     }
     sim_data = seir.run_SEIR(G, **params)
-    seir.to_log(sim_data, output_log_file)
+    seir.to_log(G, sim_data, output_log_file)
     nx.write_edgelist(G, output_net_file)
