@@ -4,7 +4,9 @@ from os.path import join as j
 import numpy as np
 import pandas as pd
 
+
 configfile: "workflow/config.yaml"
+
 
 #
 # Directories
@@ -32,7 +34,12 @@ PAPER, SUPP = [j(PAPER_DIR, f) for f in ("main.pdf", "supp.pdf")]
 #
 FIGS = [
     j(FIG_DIR, f)
-    for f in ("schematic-ctrace.pdf", "deg-ccdf-new.pdf", "sim_results.pdf", "sim_dtu_results.pdf")
+    for f in (
+        "schematic-ctrace.pdf",
+        "deg-ccdf-new.pdf",
+        "sim_results.pdf",
+        "sim_dtu_results.pdf",
+    )
 ]
 
 
@@ -40,28 +47,34 @@ FIGS = [
 # Simulations on people-gathering network
 #
 # Parameter for networks
-INTB_CONT_N = 250000  # frac of initial infected individuas
-INTB_CONT_GFRAC = ["0.2"]  # frac of gathering
+INTB_CONT_N = 250000  # fraction of initial infected individuas
+INTB_CONT_GFRAC = ["0.2"]  # fraction of gathering
 INTB_CONT_GAMMA = ["3.0"]  # Transmission rate
-INTB_CONT_SAMPLE_NUM = 100 # Number of simulations
-INTB_CONT_SEIR_E2I_RATE = ["0.1", "0.25", "0.5", "1.0", "2.0"] # incubation rate
-INTB_CONT_TRNS_RATE = ["0.25"] # transmission rate
-INTB_CONT_RECOV_RATE = ["0.25"] # recovery rate
+INTB_CONT_SAMPLE_NUM = 100  # Number of simulations
+INTB_CONT_SEIR_E2I_RATE = ["0.1", "0.25", "0.5", "1.0", "2.0"]  # incubation rate
+INTB_CONT_TRNS_RATE = ["0.25"]  # transmission rate
+INTB_CONT_RECOV_RATE = ["0.25"]  # recovery rate
 
 # Parameter for contact tracing
-INTB_CONT_PT = [1.0] # probability of tracing
-INTB_CONT_PS_LIST = [ 
+INTB_CONT_PT = [1.0]  # probability of tracing
+INTB_CONT_PS_LIST = [
     "0.05",
     "0.25",
     "0.5",
-]# probability of detecting infections 
+]  # probability of detecting infections
 
-INTB_CONT_MAX_TRACE_NODE = [10, 30, 50, 100, 99999999] # maximum number of tracing contacts 
-INTB_CONT_INTERV_START_DAY = [0.1] # intervention starting time 
-INTB_CONT_TRACE_MODE = ["frequency"] # type of contact tracing
-INTB_CONT_INCUBATION_PERIOD = ["0"] # time lag between infection and isolation
-INTB_CONT_INTERV_CYCLE = ["1.0"] # Inter-tracing time
-INTB_CONT_INTERV_MEMORY = ["0"] # set 0. This is no longer used 
+INTB_CONT_MAX_TRACE_NODE = [
+    10,
+    30,
+    50,
+    100,
+    99999999,
+]  # maximum number of tracing contacts
+INTB_CONT_INTERV_START_DAY = [0.1]  # intervention starting time
+INTB_CONT_TRACE_MODE = ["frequency"]  # type of contact tracing
+INTB_CONT_INCUBATION_PERIOD = ["0"]  # time lag between infection and isolation
+INTB_CONT_INTERV_CYCLE = ["1.0"]  # Inter-tracing time
+INTB_CONT_INTERV_MEMORY = ["0"]  # set 0. This is no longer used
 INTB_CONT_PARAMS = {
     "ps": INTB_CONT_PS_LIST,
     "maxnode": INTB_CONT_MAX_TRACE_NODE,
@@ -76,9 +89,9 @@ INTB_CONT_PARAMS = {
 }
 
 # Parameter for plotting
-INTB_CONT_NUM_TIME_POINTS = 100 # number of time points at which we measure the status
+INTB_CONT_NUM_TIME_POINTS = 100  # number of time points at which we measure the status
 
-# Log files for simulations 
+# Log files for simulations
 INTB_CONT_SEIR_LOG_FILE = j(
     INTB_CONT_SEIR_RES_DIR,
     "output",
@@ -94,7 +107,7 @@ INTB_CONT_SEIR_LOG_FILE_ALL = expand(
     sample=np.arange(INTB_CONT_SAMPLE_NUM),
 )
 
-# Network files 
+# Network files
 INTB_CONT_SEIR_NET_FILE = j(
     INTB_CONT_SEIR_RES_DIR,
     "output",
@@ -110,7 +123,7 @@ INTB_CONT_SEIR_NET_FILE_ALL = expand(
     sample=np.arange(INTB_CONT_SAMPLE_NUM),
 )
 
-# Result files 
+# Result files
 INTB_CONT_SEIR_RESULT_FILE = j(
     INTB_CONT_SEIR_RES_DIR,
     "results",
@@ -136,7 +149,7 @@ INTB_CONT_SEIR_RESULT_EVENT_FILE_ALL = expand(
     **INTB_CONT_PARAMS
 )
 
-# Files used for plot 
+# Files used for plot
 INTB_CONT_SEIR_PLOT_TIME_INFECTED_FILE_LIST = expand(
     INTB_CONT_SEIR_RESULT_EVENT_FILE,
     E2I_rate="0.25",
@@ -160,14 +173,14 @@ INTB_CONT_SEIR_PLOT_PS_INFECTED_DATA = j(
 
 
 #
-# Simulations on student contact networks 
+# Simulations on student contact networks
 #
 # Input for contact data
 DTU_CONT_CONTACT_DATA = j(
     SHARED_DIR, "shared_data/sensible-dtu/input/bluetooth-short-q60.csv"
 )
-# Retrieve the simulation results 
-DTU_CONT_SIMULATION_DATA_BETA = ["0.50"] # Transmission rate
+# Retrieve the simulation results
+DTU_CONT_SIMULATION_DATA_BETA = ["0.50"]  # Transmission rate
 DTU_CONT_SIMULATION_DATA = j(
     SHARED_DIR,
     "shared_data/sensible-dtu/output/%s/beta{beta}_T5.1_logs.csv" % DTU_MODEL,
@@ -183,16 +196,21 @@ DTU_CONT_SIMULATION_META_DATA_ALL = expand(
     DTU_CONT_SIMULATION_META_DATA, beta=DTU_CONT_SIMULATION_DATA_BETA
 )
 
-# Parameter for contact tracing 
-DTU_CONT_TRACE_TIME_WINDOW = [7] # length of tracing window within which we count the number of contacts
-DTU_CONT_CLOSE_CONTACT_THRESHOLD_PER_DAY = [0.1, 1] # Threshold between light and close contacts
+# Parameter for contact tracing
+DTU_CONT_TRACE_TIME_WINDOW = [
+    7
+]  # length of tracing window within which we count the number of contacts
+DTU_CONT_CLOSE_CONTACT_THRESHOLD_PER_DAY = [
+    0.1,
+    1,
+]  # Threshold between light and close contacts
 
-# detection and tracing probability. See INTB for details.  
+# detection and tracing probability. See INTB for details.
 DTU_CONT_PS_LIST = [
     "0.05",
     "0.25",
     "0.5",
-] 
+]
 
 DTU_CONT_MAX_TRACE_NODE = [1, 3, 10, 9999]
 DTU_CONT_INTERV_START_DAY = [3]
@@ -223,7 +241,7 @@ DTU_CONT_RESULT_EVENT_FILE = j(
 )
 DTU_CONT_RESULT_EVENT_FILE_ALL = expand(DTU_CONT_RESULT_EVENT_FILE, **DTU_CONT_PARAMS)
 
-# Parameter for plot  
+# Parameter for plot
 DTU_CONT_NUM_TIME_POINTS = 100
 DTU_CONT_PLOT_DATA_PARAM = {
     "ttwindow": "7",
@@ -253,7 +271,7 @@ DTU_CONT_PLOT_PS_INFECTED_DATA = j(DTU_DIR, "plot-data-ps-vs-infected.csv")
 BA_CONT_N = 250000  # number of nodes
 BA_CONT_M = 2
 
-# Parameter for simulations. See INTB for details. 
+# Parameter for simulations. See INTB for details.
 BA_CONT_NUM_SAMPLE = 100
 BA_CONT_PS_LIST = [
     "0.05",
@@ -284,7 +302,7 @@ BA_CONT_PARAMS = {
     "tracemode": ["frequency"],
 }
 
-# Log files for simulations 
+# Log files for simulations
 BA_CONT_SEIR_LOG_FILE = j(
     BA_CONT_SEIR_RES_DIR,
     "output",
@@ -298,7 +316,7 @@ BA_CONT_SEIR_LOG_FILE_ALL = expand(
     sample=np.arange(BA_CONT_NUM_SAMPLE),
 )
 
-# Network files 
+# Network files
 BA_CONT_SEIR_NET_FILE = j(
     BA_CONT_SEIR_RES_DIR,
     "output",
@@ -312,7 +330,7 @@ BA_CONT_SEIR_NET_FILE_ALL = expand(
     sample=np.arange(BA_CONT_NUM_SAMPLE),
 )
 
-# Result files 
+# Result files
 BA_CONT_SEIR_RESULT_FILE = j(
     BA_CONT_SEIR_RES_DIR,
     "results",
@@ -351,7 +369,7 @@ BA_CONT_SEIR_DEG_DIST = j(BA_CONT_SEIR_RES_DIR, "deg-dist.csv")
 # people gathering
 INTB_CONT_SEIR_DEG_DIST = j(INTB_CONT_SEIR_RES_DIR, "deg-dist.csv")
 
-# Student contact 
+# Student contact
 DTU_CONT_TIME_RESOL = [1, 3, 6, 12, 12 * 6, 12 * 12, 12 * 24]
 DTU_CONT_DEG_DIST = j(DTU_DIR, "%s-deg-dist-{resol}.csv" % DTU_MODEL)
 DTU_CONT_DEG_DIST_ALL = expand(DTU_CONT_DEG_DIST, resol=DTU_CONT_TIME_RESOL)
@@ -493,7 +511,7 @@ rule ba_ct_degree_dist_seir:
     output:
         BA_CONT_SEIR_DEG_DIST,
     params:
-        E2I_rate = 0.25,
+        E2I_rate=0.25,
         trans_rate=0.25,
         recov_rate=0.25,
         num_samples=30,
@@ -503,13 +521,14 @@ rule ba_ct_degree_dist_seir:
     shell:
         "python3 workflow/calc-deg-dist-seir-ba.py {BA_CONT_N} {BA_CONT_M} {params.E2I_rate} {params.trans_rate} {params.recov_rate} {params.num_samples} {params.p_s} {params.p_t} {params.interv_t} {output}"
 
+
 rule intb_ct_degree_dist_seir:
     output:
         INTB_CONT_SEIR_DEG_DIST,
     params:
-        E2I_rate = 0.25,
-        gamma = 3.0,
-        gfrac = 0.2,
+        E2I_rate=0.25,
+        gamma=3.0,
+        gfrac=0.2,
         trans_rate=0.25,
         recov_rate=0.25,
         num_samples=30,
@@ -526,6 +545,7 @@ def make_file_list(files):
     filename = tempfile.NamedTemporaryFile(delete=False).name
     pd.DataFrame(files).to_csv(filename, index=False, header=None)
     return filename
+
 
 #
 # Preprocess data for plotting
@@ -601,36 +621,35 @@ rule prep_plot_data_ps_vs_infected_ba_seir:
 
 rule plot_fig_degree_dist:
     input:
-        ba_deg_dist_file = BA_CONT_SEIR_DEG_DIST,
+        ba_deg_dist_file=BA_CONT_SEIR_DEG_DIST,
         intb_deg_dist_file=INTB_CONT_SEIR_DEG_DIST,
-        dtu_deg_dist_file=DTU_CONT_DEG_DIST.format(resol=12)
+        dtu_deg_dist_file=DTU_CONT_DEG_DIST.format(resol=12),
     output:
         fig=j(FIG_DIR, "deg-ccdf-new.pdf"),
-        data=j(FIG_DIR, "deg-ccdf-new.csv")
+        data=j(FIG_DIR, "deg-ccdf-new.csv"),
     shell:
         "papermill workflow/plot_fig_degree_dist.ipynb -r ba_deg_dist_file {input.ba_deg_dist_file} -r intb_deg_dist_file {input.intb_deg_dist_file} -r dtu_deg_dist_file {input.dtu_deg_dist_file} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
 
 
 rule plot_fig_sim_result:
     input:
-        int_time = BA_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
-        int_ps = BA_CONT_SEIR_PLOT_PS_INFECTED_DATA,
-        intb_time = INTB_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
-        intb_ps = INTB_CONT_SEIR_PLOT_PS_INFECTED_DATA,
+        int_time=BA_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
+        int_ps=BA_CONT_SEIR_PLOT_PS_INFECTED_DATA,
+        intb_time=INTB_CONT_SEIR_PLOT_TIME_INFECTED_DATA,
+        intb_ps=INTB_CONT_SEIR_PLOT_PS_INFECTED_DATA,
     output:
         fig=j(FIG_DIR, "sim_results.pdf"),
-        data=j(FIG_DIR, "sim_results.csv")
+        data=j(FIG_DIR, "sim_results.csv"),
     shell:
         "papermill workflow/plot-sim-result.ipynb -r int_time {input.int_time} -r int_ps {input.int_ps} -r intb_time {input.intb_time} -r intb_ps {input.intb_ps} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
 
 
 rule plot_fig_sim_dtu_result:
     input:
-        dtu_time = DTU_CONT_PLOT_TIME_INFECTED_DATA,
-        dtu_ps = DTU_CONT_PLOT_PS_INFECTED_DATA
+        dtu_time=DTU_CONT_PLOT_TIME_INFECTED_DATA,
+        dtu_ps=DTU_CONT_PLOT_PS_INFECTED_DATA,
     output:
         fig=j(FIG_DIR, "sim_dtu_results.pdf"),
-        data=j(FIG_DIR, "sim_dtu_results.csv")
+        data=j(FIG_DIR, "sim_dtu_results.csv"),
     shell:
         "papermill workflow/plot-sim-dtu-result.ipynb -r dtu_time {input.dtu_time} -r dtu_ps {input.dtu_ps} -r outputfile {output.fig} -r outputfile_data {output.data} $(mktemp)"
-
