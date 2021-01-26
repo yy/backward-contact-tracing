@@ -473,15 +473,15 @@ rule paper:
 #
 # Rules for generating and simulating SIR/SEIR models
 #
-rule intb_generate_networks_sir:
-    output:
-        INTB_CONT_SIR_LOG_FILE,
-        INTB_CONT_SIR_NET_FILE,
-    params:
-        gamma=lambda wildcards: wildcards.gamma,
-        frac=lambda wildcards: wildcards.gfrac,
-    shell:
-        "python3 workflow/generate-synthe-people-gathering-nets-sir.py {INTB_CONT_N} {params.gamma} {params.frac} {output}"
+#rule intb_generate_networks_sir:
+#    output:
+#        INTB_CONT_SIR_LOG_FILE,
+#        INTB_CONT_SIR_NET_FILE,
+#    params:
+#        gamma=lambda wildcards: wildcards.gamma,
+#        frac=lambda wildcards: wildcards.gfrac,
+#    shell:
+#        "python3 workflow/generate-synthe-people-gathering-nets-sir.py {INTB_CONT_N} {params.gamma} {params.frac} {output}"
 
 
 rule intb_generate_networks_seir:
@@ -498,15 +498,15 @@ rule intb_generate_networks_seir:
         "python3 workflow/generate-synthe-people-gathering-nets-seir.py {INTB_CONT_N} {params.gamma} {params.frac} {params.E2I_rate} {params.trans_rate} {params.recov_rate} {output}"
 
 
-rule ba_generate_networks_sir:
-    output:
-        BA_CONT_SIR_LOG_FILE,
-        BA_CONT_SIR_NET_FILE,
-    params:
-        trans=lambda wildcards: wildcards.trans,
-        recov=lambda wildcards: wildcards.recov,
-    shell:
-        "python3 workflow/generate-ba-net-sir.py {BA_CONT_N} {BA_CONT_M} {params.trans} {params.recov} {output}"
+#rule ba_generate_networks_sir:
+#    output:
+#        BA_CONT_SIR_LOG_FILE,
+#        BA_CONT_SIR_NET_FILE,
+#    params:
+#        trans=lambda wildcards: wildcards.trans,
+#        recov=lambda wildcards: wildcards.recov,
+#    shell:
+#        "python3 workflow/generate-ba-net-sir.py {BA_CONT_N} {BA_CONT_M} {params.trans} {params.recov} {output}"
 
 
 rule ba_generate_networks_seir:
@@ -521,35 +521,35 @@ rule ba_generate_networks_seir:
         "python3 workflow/generate-ba-net-seir.py {BA_CONT_N} {BA_CONT_M} {params.E2I_rate} {params.trans} {params.recov} {output}"
 
 
-rule ba_generate_networks_all:
-    input:
-        BA_CONT_SIR_LOG_FILE_ALL,
-        BA_CONT_SIR_NET_FILE_ALL,
-        BA_CONT_SEIR_LOG_FILE_ALL,
-        BA_CONT_SEIR_NET_FILE_ALL,
+#rule ba_generate_networks_all:
+#    input:
+#        BA_CONT_SIR_LOG_FILE_ALL,
+#        BA_CONT_SIR_NET_FILE_ALL,
+#        BA_CONT_SEIR_LOG_FILE_ALL,
+#        BA_CONT_SEIR_NET_FILE_ALL,
 
 
 #
 # Rules for simulating contact tracing on BA and People-Gathering nets
 #
-rule ba_sir_continuous_ct:
-    input:
-        BA_CONT_SIR_NET_FILE,
-        BA_CONT_SIR_LOG_FILE,
-    output:
-        BA_CONT_SIR_RESULT_FILE,
-        BA_CONT_SIR_RESULT_EVENT_FILE,
-    params:
-        sample=lambda wildcards: wildcards.sample,
-        ps=lambda wildcards: wildcards.ps,
-        maxnode=lambda wildcards: wildcards.maxnode,
-        cycle=lambda wildcards: wildcards.cycle,
-        start_day=lambda wildcards: wildcards.start_day,
-        incubation=lambda wildcards: wildcards.incubation,
-        memory=lambda wildcards: wildcards.memory,
-        trace_mode=lambda wildcards: wildcards.tracemode,
-    shell:
-        "python3 workflow/simulate_continuous_contact_tracing.py {input} {params.ps} {params.maxnode} {params.start_day} {params.cycle} {params.memory} {params.incubation} {params.trace_mode} {output}"
+#rule ba_sir_continuous_ct:
+#    input:
+#        BA_CONT_SIR_NET_FILE,
+#        BA_CONT_SIR_LOG_FILE,
+#    output:
+#        BA_CONT_SIR_RESULT_FILE,
+#        BA_CONT_SIR_RESULT_EVENT_FILE,
+#    params:
+#        sample=lambda wildcards: wildcards.sample,
+#        ps=lambda wildcards: wildcards.ps,
+#        maxnode=lambda wildcards: wildcards.maxnode,
+#        cycle=lambda wildcards: wildcards.cycle,
+#        start_day=lambda wildcards: wildcards.start_day,
+#        incubation=lambda wildcards: wildcards.incubation,
+#        memory=lambda wildcards: wildcards.memory,
+#        trace_mode=lambda wildcards: wildcards.tracemode,
+#    shell:
+#        "python3 workflow/simulate_continuous_contact_tracing.py {input} {params.ps} {params.maxnode} {params.start_day} {params.cycle} {params.memory} {params.incubation} {params.trace_mode} {output}"
 
 
 rule ba_seir_continuous_ct:
@@ -572,24 +572,24 @@ rule ba_seir_continuous_ct:
         "python3 workflow/simulate_continuous_contact_tracing.py {input} {params.ps} {params.maxnode} {params.start_day} {params.cycle} {params.memory} {params.incubation} {params.trace_mode} {output}"
 
 
-rule intb_sir_continuous_ct:
-    input:
-        INTB_CONT_SIR_NET_FILE,
-        INTB_CONT_SIR_LOG_FILE,
-    output:
-        INTB_CONT_SIR_RESULT_FILE,
-        INTB_CONT_SIR_RESULT_EVENT_FILE,
-    params:
-        sample=lambda wildcards: wildcards.sample,
-        ps=lambda wildcards: wildcards.ps,
-        maxnode=lambda wildcards: wildcards.maxnode,
-        cycle=lambda wildcards: wildcards.cycle,
-        start_day=lambda wildcards: wildcards.start_day,
-        incubation=lambda wildcards: wildcards.incubation,
-        memory=lambda wildcards: wildcards.memory,
-        trace_mode=lambda wildcards: wildcards.tracemode,
-    shell:
-        "python3 workflow/simulate_continuous_contact_tracing.py {input} {params.ps} {params.maxnode} {params.start_day} {params.cycle} {params.memory} {params.incubation} {params.trace_mode} {output}"
+#rule intb_sir_continuous_ct:
+#    input:
+#        INTB_CONT_SIR_NET_FILE,
+#        INTB_CONT_SIR_LOG_FILE,
+#    output:
+#        INTB_CONT_SIR_RESULT_FILE,
+#        INTB_CONT_SIR_RESULT_EVENT_FILE,
+#    params:
+#        sample=lambda wildcards: wildcards.sample,
+#        ps=lambda wildcards: wildcards.ps,
+#        maxnode=lambda wildcards: wildcards.maxnode,
+#        cycle=lambda wildcards: wildcards.cycle,
+#        start_day=lambda wildcards: wildcards.start_day,
+#        incubation=lambda wildcards: wildcards.incubation,
+#        memory=lambda wildcards: wildcards.memory,
+#        trace_mode=lambda wildcards: wildcards.tracemode,
+#    shell:
+#        "python3 workflow/simulate_continuous_contact_tracing.py {input} {params.ps} {params.maxnode} {params.start_day} {params.cycle} {params.memory} {params.incubation} {params.trace_mode} {output}"
 
 
 rule intb_seir_continuous_ct:
@@ -655,23 +655,23 @@ rule dtu_continuous_interv_deg_plot:
         "python3 workflow/calc-deg-dist-dtu.py {input} {params.ttwindow} {params.ccontact} {params.ps} {params.cycle} {params.incubation} {params.resol} {output}"
 
 
-rule dtu_continuous_interv_deg_plot_all:
-    input:
-        DTU_CONT_DEG_DIST_ALL,
+#rule dtu_continuous_interv_deg_plot_all:
+#    input:
+#        DTU_CONT_DEG_DIST_ALL,
 
 
-rule ba_ct_degree_dist_sir:
-    output:
-        BA_CONT_SIR_DEG_DIST,
-    params:
-        trans_rate=0.25,
-        recov_rate=0.25,
-        num_samples=30,
-        p_s=0.1,
-        p_t=0.5,
-        interv_t=1.0,
-    shell:
-        "python3 workflow/calc-deg-dist-sir-ba.py {BA_CONT_N} {BA_CONT_M} {params.trans_rate} {params.recov_rate} {params.num_samples} {params.p_s} {params.p_t} {params.interv_t} {output}"
+#rule ba_ct_degree_dist_sir:
+#    output:
+#        BA_CONT_SIR_DEG_DIST,
+#    params:
+#        trans_rate=0.25,
+#        recov_rate=0.25,
+#        num_samples=30,
+#        p_s=0.1,
+#        p_t=0.5,
+#        interv_t=1.0,
+#    shell:
+#        "python3 workflow/calc-deg-dist-sir-ba.py {BA_CONT_N} {BA_CONT_M} {params.trans_rate} {params.recov_rate} {params.num_samples} {params.p_s} {params.p_t} {params.interv_t} {output}"
 
 rule ba_ct_degree_dist_seir:
     output:
@@ -703,12 +703,19 @@ rule intb_ct_degree_dist_seir:
     shell:
         "python3 workflow/calc-deg-dist-seir-intb.py {INTB_CONT_N} {params.gamma} {params.gfrac} {params.E2I_rate} {params.trans_rate} {params.recov_rate} {params.num_samples} {params.p_s} {params.p_t} {params.interv_t} {output}"
 
-rule interv_simulation_all:
-    input:
-        BA_CONT_SEIR_RESULT_FILE_ALL, #DTU_CONT_RESULT_FILE_ALL,
-         #DTU_CONT_RESULT_EVENT_FILE_ALL,
-        INTB_CONT_SEIR_RESULT_FILE_ALL,
+#rule interv_simulation_all:
+#    input:
+#        BA_CONT_SEIR_RESULT_FILE_ALL, #DTU_CONT_RESULT_FILE_ALL,
+#         #DTU_CONT_RESULT_EVENT_FILE_ALL,
+#        INTB_CONT_SEIR_RESULT_FILE_ALL,
 
+
+# This is a remedy for preventing snakemake to stop due to passing too many files as commandline arguments.
+# To get around this, I create a list of file names and save it as a csv file. The csv file is then passed to the program.
+def make_file_list(files):
+    filename = tempfile.NamedTemporaryFile(delete=False).name
+    pd.DataFrame(files).to_csv(filename, index=False, header=None)
+    return filename
 
 #
 # Preprocess data for plotting
@@ -719,8 +726,10 @@ rule prep_plot_data_time_vs_infected_dtu:
         DTU_CONT_PLOT_TIME_INFECTED_FILE_LIST,
     output:
         DTU_CONT_PLOT_TIME_INFECTED_DATA,
+    params:
+        filelist=temp(make_file_list(DTU_CONT_PLOT_TIME_INFECTED_FILE_LIST)),
     shell:
-        "python3 workflow/calc_time_vs_infected_nodes.py {input} {DTU_CONT_NUM_TIME_POINTS} {output}"
+        "python3 workflow/calc_time_vs_infected_nodes.py {params.filelist}  {DTU_CONT_NUM_TIME_POINTS} {output}"
 
 
 rule prep_plot_data_ps_vs_infected_dtu:
@@ -728,40 +737,35 @@ rule prep_plot_data_ps_vs_infected_dtu:
         DTU_CONT_PLOT_PS_INFECTED_FILE_LIST,
     output:
         DTU_CONT_PLOT_PS_INFECTED_DATA,
+    params:
+        filelist=temp(make_file_list(DTU_CONT_PLOT_PS_INFECTED_FILE_LIST)),
     shell:
-        "python3 workflow/calc_ps_vs_infected.py {input} {output}"
+        "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
 
 
 # People-Gathering net
 
-# This is a remedy for preventing snakemake to stop due to passing too many files as commandline arguments.
-# To get around this, I create a list of file names and save it as a csv file. The csv file is then passed to the program.
-def make_file_list(files):
-    filename = tempfile.NamedTemporaryFile(delete=False).name
-    pd.DataFrame(files).to_csv(filename, index=False, header=None)
-    return filename
+
+#rule prep_plot_data_time_vs_infected_intb_sir:
+#    input:
+#        INTB_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST,
+#    output:
+#        INTB_CONT_SIR_PLOT_TIME_INFECTED_DATA,
+#    params:
+#        filelist=temp(make_file_list(INTB_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST)),
+#    shell:
+#        "python3 workflow/calc_time_vs_infected_nodes.py {params.filelist} {INTB_CONT_NUM_TIME_POINTS} {output}"
 
 
-rule prep_plot_data_time_vs_infected_intb_sir:
-    input:
-        INTB_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST,
-    output:
-        INTB_CONT_SIR_PLOT_TIME_INFECTED_DATA,
-    params:
-        filelist=temp(make_file_list(INTB_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST)),
-    shell:
-        "python3 workflow/calc_time_vs_infected_nodes.py {params.filelist} {INTB_CONT_NUM_TIME_POINTS} {output}"
-
-
-rule prep_plot_data_ps_vs_infected_intb_sir:
-    input:
-        INTB_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST,
-    output:
-        INTB_CONT_SIR_PLOT_PS_INFECTED_DATA,
-    params:
-        filelist=temp(make_file_list(INTB_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST)),
-    shell:
-        "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
+#rule prep_plot_data_ps_vs_infected_intb_sir:
+#    input:
+#        INTB_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST,
+#    output:
+#        INTB_CONT_SIR_PLOT_PS_INFECTED_DATA,
+#    params:
+#        filelist=temp(make_file_list(INTB_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST)),
+#    shell:
+#        "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
 
 
 rule prep_plot_data_time_vs_infected_intb_seir:
@@ -787,26 +791,26 @@ rule prep_plot_data_ps_vs_infected_intb_seir:
 
 
 # Barabasi-Albert net
-rule prep_plot_data_time_vs_infected_ba_sir:
-    input:
-        BA_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST,
-    output:
-        BA_CONT_SIR_PLOT_TIME_INFECTED_DATA,
-    params:
-        filelist=temp(make_file_list(BA_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST)),
-    shell:
-        "python3 workflow/calc_time_vs_infected_nodes.py {params.filelist} {BA_CONT_NUM_TIME_POINTS} {output}"
+#rule prep_plot_data_time_vs_infected_ba_sir:
+#    input:
+#        BA_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST,
+#    output:
+#        BA_CONT_SIR_PLOT_TIME_INFECTED_DATA,
+#    params:
+#        filelist=temp(make_file_list(BA_CONT_SIR_PLOT_TIME_INFECTED_FILE_LIST)),
+#    shell:
+#        "python3 workflow/calc_time_vs_infected_nodes.py {params.filelist} {BA_CONT_NUM_TIME_POINTS} {output}"
 
 
-rule prep_plot_data_ps_vs_infected_ba_sir:
-    input:
-        BA_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST,
-    output:
-        BA_CONT_SIR_PLOT_PS_INFECTED_DATA,
-    params:
-        filelist=temp(make_file_list(BA_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST)),
-    shell:
-        "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
+#rule prep_plot_data_ps_vs_infected_ba_sir:
+#    input:
+#        BA_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST,
+#    output:
+#        BA_CONT_SIR_PLOT_PS_INFECTED_DATA,
+#    params:
+#        filelist=temp(make_file_list(BA_CONT_SIR_PLOT_PS_INFECTED_FILE_LIST)),
+#    shell:
+#        "python3 workflow/calc_ps_vs_infected.py {params.filelist} {output}"
 
 
 rule prep_plot_data_time_vs_infected_ba_seir:
