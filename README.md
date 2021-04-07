@@ -2,8 +2,9 @@
 
 This repository contains the code for: 
 
-Journal paper:
+
 - S. Kojaku, L. Hébert-Dufresne, E. Mones, S. Lehmann, and Y.-Y. Ahn, The effectiveness of backward contact tracing in networks. Nat. Phys. (2021). https://doi.org/10.1038/s41567-021-01187-2 
+
 
 Preprint (arXiv): https://arxiv.org/abs/2005.02362
 
